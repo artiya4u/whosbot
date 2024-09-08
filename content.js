@@ -49,7 +49,7 @@ function parse_replies() {
     return replies;
 }
 
-let sleep_period = 1;
+let sleep_period = 0.100;
 let style_to_hide = 'opacity';
 let style_value = '0.10';
 
