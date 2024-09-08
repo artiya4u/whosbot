@@ -15,6 +15,9 @@ function parse_replies() {
         try {
             let reply_elm = replies_elms[i];
             let user_link_elm = reply_elm.querySelectorAll('a[role="link"]')[1];
+            if (!user_link_elm) {
+                continue;
+            }
             // extract the user from the href e.g. http://x.com/artiya4u
             let username = user_link_elm.href.split('/').pop();
             let verified = reply_elm.querySelector('svg[aria-label="Verified account"]') != null;
@@ -90,7 +93,7 @@ function check_spam(post_user, replies) {
         if (block_affiliate) {
             for (let j = 0; j < affiliate_links.length; j++) {
                 let affiliate_link = affiliate_links[j];
-                if (reply.text.includes(affiliate_link)) {
+                if (reply.text && reply.text.includes(affiliate_link)) {
                     check_and_hide_elm(reply.reply_elm);
                     continue;
                 }
@@ -108,7 +111,6 @@ function check_spam(post_user, replies) {
 
         // remove replies with sub post
         if (reply.sub_post != null && block_sub_post) {
-            console.log('sub post', reply.sub_post);
             check_and_hide_elm(reply.reply_elm);
             continue;
         }
