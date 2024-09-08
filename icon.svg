@@ -1,0 +1,21 @@
+<svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+     class="jsx-2263963463 artboard-inner" style="width: 300px; height: 300px; max-height: 100%;">
+    <g transform="translate(25 25) scale(1.4285714285714286)" id="lockup4-icon">
+        <g fill="#FFFFFF">
+            <g transform="translate(-17.5 -17.5) scale(0.3431372549019608)" id="container">
+                <g fill="#FFFFFF">
+                    <polygon vector-effect="non-scaling-stroke" points="1 101 101 101 101 1 1 1"></polygon>
+                </g>
+            </g>
+            <g transform="translate(-11.428571428571429 -11.72857142857143) scale(0.7142857142857142)" id="icon">
+                <g fill="#232323">
+                    <g data-name="Layer 2">
+                        <path d="M25 30H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5h18a5 5 0 0 1 5 5v18a5 5 0 0 1-5 5zM7 4a3 3 0 0 0-3 3v18a3 3 0 0 0 3 3h18a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3z"></path>
+                        <path d="M21 13a4.13 4.13 0 0 1-4-4 1 1 0 0 1 1-1 1 1 0 0 1 1 1 2.12 2.12 0 0 0 2 2 2 2 0 0 0 2-2 1 1 0 0 1 2 0 4 4 0 0 1-4 4zM11 13a4.13 4.13 0 0 1-4-4 1 1 0 0 1 1-1 1 1 0 0 1 1 1 2.12 2.12 0 0 0 2 2 2 2 0 0 0 2-2 1 1 0 0 1 2 0 4 4 0 0 1-4 4zM22 25a1 1 0 0 1-.29 0l-13-4a1 1 0 0 1 .58-2l13 4a1 1 0 0 1-.29 2z"></path>
+                        <path d="M10 25a1 1 0 0 1-.29-2l13-4a1 1 0 1 1 .58 2l-13 4a1 1 0 0 1-.29 0z"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
