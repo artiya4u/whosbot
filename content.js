@@ -1,5 +1,11 @@
 const sleep = async (secs) => new Promise(resolve => setTimeout(resolve, secs * 1000));
 
+const affiliate_links = [
+    's.shopee',
+    's.lazada',
+    'shope.ee',
+    'shp.ee'
+];
 
 // on the page load, get all the replies
 function parse_replies() {
@@ -12,23 +18,49 @@ function parse_replies() {
             // extract the user from the href e.g. http://x.com/artiya4u
             let username = user_link_elm.href.split('/').pop();
             let verified = reply_elm.querySelector('svg[aria-label="Verified account"]') != null;
+            let text = reply_elm.querySelector('div[dir="auto"]')?.textContent;
+            let sub_content = reply_elm.querySelector('div[aria-labelledby]');
+            let sub_link = null;
+            let sub_post = null;
+            if (sub_content != null) {
+                let link_elm = sub_content.querySelector('a');
+                if (link_elm != null) {
+                    sub_link = link_elm.href;
+                }
+                sub_post = sub_content.querySelector('div[dir="auto"]');
+            }
+
             let reply = {
                 username: username,
                 verified: verified,
                 reply_elm: reply_elm.parentElement.parentElement.parentElement,
+                text: text,
+                sub_link: sub_link,
+                sub_post: sub_post,
             };
             replies.push(reply);
         } catch (e) {
+            console.log('Error parsing reply', e);
         }
     }
     return replies;
 }
 
-let sleep_period = 0.100;
+let sleep_period = 1;
 let style_to_hide = 'opacity';
 let style_value = '0.10';
 
 let use_hide = false;
+
+let block_emoji = true;
+let block_affiliate = true;
+let block_sub_post = true;
+
+function check_and_hide_elm(elm) {
+    if (elm.style[style_to_hide] !== style_value) {
+        elm.style[style_to_hide] = style_value;
+    }
+}
 
 
 function check_spam(post_user, replies) {
@@ -36,11 +68,49 @@ function check_spam(post_user, replies) {
     for (let i = 1; i < replies.length; i++) { // skip the post itself
         let reply = replies[i];
         let username = reply.username;
-        if (reply.verified && username !== first_reply.username && username !== post_user) {
-            // remove the reply element
-            if (reply.reply_elm.style[style_to_hide] !== style_value) {
-                reply.reply_elm.style[style_to_hide] = style_value;
+        if (username === first_reply.username) {
+            continue;
+        }
+        if (username === post_user) {
+            continue;
+        }
+
+        if (reply.verified && username !== post_user) {
+            check_and_hide_elm(reply.reply_elm);
+            continue;
+        }
+
+        // remove none text replies
+        if (reply.text === '' && block_emoji) {
+            check_and_hide_elm(reply.reply_elm);
+            continue;
+        }
+
+        // remove affiliate links
+        if (block_affiliate) {
+            for (let j = 0; j < affiliate_links.length; j++) {
+                let affiliate_link = affiliate_links[j];
+                if (reply.text.includes(affiliate_link)) {
+                    check_and_hide_elm(reply.reply_elm);
+                    continue;
+                }
             }
+        }
+
+        // remove replies with sub link
+        if (reply.sub_link != null && block_sub_post) {
+            let domain = new URL(reply.sub_link).hostname;
+            if (domain !== window.location.hostname) {
+                check_and_hide_elm(reply.reply_elm);
+                continue;
+            }
+        }
+
+        // remove replies with sub post
+        if (reply.sub_post != null && block_sub_post) {
+            console.log('sub post', reply.sub_post);
+            check_and_hide_elm(reply.reply_elm);
+            continue;
         }
     }
 
@@ -53,14 +123,20 @@ function check_spam(post_user, replies) {
         user_replies[reply.username].push(reply);
     }
     for (let username in user_replies) {
+        if (username === first_reply.username) {
+            continue;
+        }
+        if (username === post_user) {
+            continue;
+        }
+
         let user_rep_list = user_replies[username];
-        if (user_rep_list.length > 2 && username !== first_reply.username && username !== post_user) {
+        if (user_rep_list.length > 2) {
             // spam detected remove the replies
             for (let i = 0; i < user_rep_list.length; i++) {
                 let reply = user_rep_list[i];
-                if (reply.reply_elm.style[style_to_hide] !== style_value) {
-                    reply.reply_elm.style[style_to_hide] = style_value;
-                }
+                console.log('spam', reply.reply_elm);
+                check_and_hide_elm(reply.reply_elm);
             }
         }
     }
@@ -94,5 +170,8 @@ chrome.storage.sync.get(null, function (items) {
         style_to_hide = 'display';
         style_value = 'none';
     }
+    block_emoji = items.emoji;
+    block_affiliate = items.affiliate;
+    block_sub_post = items.sub_post;
     app_loop().then();
 });
