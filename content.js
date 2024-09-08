@@ -137,7 +137,6 @@ function check_spam(post_user, replies) {
             // spam detected remove the replies
             for (let i = 0; i < user_rep_list.length; i++) {
                 let reply = user_rep_list[i];
-                console.log('spam', reply.reply_elm);
                 check_and_hide_elm(reply.reply_elm);
             }
         }
